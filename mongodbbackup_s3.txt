@@ -1,0 +1,76 @@
+#!/bin/bash
+##Script for DB backups using mongodump
+# Creating a log director
+#month=$(date +%b)
+DAY=$(date +%Y-%m-%d)
+DIR=/mnt/backups/backup_$DAY
+FILEEXTN=mongodump-$(date +$DAY\_%H-%M)
+BACKUPDIR=$DIR/$FILEEXTN
+
+echo '****************************'
+echo 'Backup Started'
+
+#Make sure teh backp dir exists"
+mkdir -p $BACKUPDIR
+
+#cd /data2/BACKUP
+
+#DB backup using mongodump
+mongodump -o $BACKUPDIR
+
+#cd /data2/BACKUP/dump
+#zip -r koredbm001.zip koredbm001
+#zip -r koredbt001.zip koredbt001
+#zip -r keys.zip keys
+
+#Zip the backup
+cd $DIR
+zip -r $FILEEXTN.zip $FILEEXTN
+
+#Remove the original directory after zipping
+rm -rf $BACKUPDIR
+
+
+#echo 'Moving files'
+#mv *.zip /home/ec2-user/BACKUP/
+#echo 'Completed Backup git folder'
+#echo '****************************'
+#echo 'Back up to S3 started'
+#/usr/bin/s3cmd sync /home/ec2-user/BACKUP/koredbm001.zip s3://DBbackupmongo/$month/QA/koredbm001_`date +%F`.zip
+#/usr/bin/s3cmd sync /home/ec2-user/BACKUP/koredbt001.zip s3://DBbackupmongo/$month/QA/koredbt001_`date +%F`.zip
+#/usr/bin/s3cmd sync /home/ec2-user/BACKUP/keys.zip s3://DBbackupmongo/$month/QA/keys_`date +%F`.zip
+#echo 'Completed Backup S3'
+#echo '****************************'
+#Deleting ZIP files
+#echo ' Deleting ZIP files '
+#cd /home/ec2-user/BACKUP
+#rm -rf *.zip
+#cd /data2/BACKUP/dump
+#rm -rf *
+echo ' completed '
+echo '****************************'
+
+
+
+==================================================
+upload to s3 script
+
+
+#!/bin/bash
+## Script to upload the latest backup of the day to S3
+month=$(date +%b)
+DAY=$(date +%Y-%m-%d)
+DIR=/mnt/backups/backup_$DAY
+BKUPFILE=$(ls -1rt $DIR/*.zip | tail -1)
+
+#Uplod the latest backup to S3
+/usr/bin/s3cmd put $BKUPFILE s3://DBbackupmongo/$month/QA/
+
+echo "Upload done"
+
+echo "removing old backup once the upload is completed"
+rm -rf $BKUPFILE
+
+=====================================================
+
+
