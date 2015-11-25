@@ -1,0 +1,7 @@
+#delete tar file and checked out folder
+     51 # /bin/rm $BACKUP_DIR/$repository.$date.git.tar.gz
+     52 # /bin/rm -rf $BACKUP_DIR/$repository.$date.git
+     53 # if [ $? -ne 0 ]; then
+     54 #  echo "Error removing $repository"
+     55 #   exit 1
+     56 #  fi
