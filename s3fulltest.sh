@@ -1,6 +1,6 @@
 #!/bin/bash
 
-S3_NAME=git-hub-192.168.0.1
+#S3_NAME=git-hub-192.168.0.1
 BACKUP_DIR=/home/manojc/test-github/s3backup
 password=March181987
 account=manojchandrabss
